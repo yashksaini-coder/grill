@@ -1,0 +1,25 @@
+{
+  "name": "grill",
+  "version": "0.1.0",
+  "description": "A local mock interviewer that has read your code. Rust and JavaScript, fully offline.",
+  "type": "module",
+  "bin": { "grill": "dist/cli.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "test": "tsx --test test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "engines": { "node": ">=22.13.0" },
+  "license": "MIT",
+  "dependencies": {
+    "@mastra/core": "^1.74.0",
+    "picocolors": "^1.1.1",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

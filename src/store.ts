@@ -1,0 +1,59 @@
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { paths } from "./config.js";
+import type { Hotspot, Round, Session } from "./types.js";
+
+export function saveHotspots(hotspots: Hotspot[]): void {
+  mkdirSync(join(paths.hotspots, ".."), { recursive: true });
+  writeFileSync(paths.hotspots, JSON.stringify(hotspots, null, 2));
+}
+
+export function loadHotspots(): Hotspot[] {
+  if (!existsSync(paths.hotspots)) return [];
+  return JSON.parse(readFileSync(paths.hotspots, "utf8")) as Hotspot[];
+}
+
+export function saveSession(session: Session): string {
+  mkdirSync(paths.sessions, { recursive: true });
+  const file = join(paths.sessions, `${session.startedAt.replace(/[:.]/g, "-")}.json`);
+  writeFileSync(file, JSON.stringify(session, null, 2));
+  return file;
+}
+
+export function loadRounds(): Round[] {
+  if (!existsSync(paths.sessions)) return [];
+  return readdirSync(paths.sessions)
+    .filter((name) => name.endsWith(".json"))
+    .sort()
+    .flatMap((name) => (JSON.parse(readFileSync(join(paths.sessions, name), "utf8")) as Session).rounds);
+}
+
+export interface TopicStat {
+  topic: string;
+  rounds: number;
+  /** Mean score, 0 to 4. */
+  mean: number;
+  /** What the grader said was missing, most recent first. */
+  missed: string[];
+}
+
+export function topicStats(rounds: Round[]): TopicStat[] {
+  const byTopic = new Map<string, Round[]>();
+  for (const round of rounds) {
+    const list = byTopic.get(round.topic) ?? [];
+    list.push(round);
+    byTopic.set(round.topic, list);
+  }
+  return [...byTopic.entries()]
+    .map(([topic, list]) => ({
+      topic,
+      rounds: list.length,
+      mean: list.reduce((sum, r) => sum + r.grade.score, 0) / list.length,
+      missed: list
+        .slice()
+        .reverse()
+        .flatMap((r) => r.grade.missed)
+        .slice(0, 3),
+    }))
+    .sort((a, b) => a.mean - b.mean);
+}

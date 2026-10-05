@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { paths } from "./config.js";
+import { parseSlug } from "./ingest/clone.js";
 import type { Hotspot, Round, Session } from "./types.js";
 
 export function saveHotspots(hotspots: Hotspot[]): void {
@@ -11,6 +12,12 @@ export function saveHotspots(hotspots: Hotspot[]): void {
 export function loadHotspots(): Hotspot[] {
   if (!existsSync(paths.hotspots)) return [];
   return JSON.parse(readFileSync(paths.hotspots, "utf8")) as Hotspot[];
+}
+
+/** Everything found in one repository, named as `grill spots` shows it or as it was ingested. */
+export function dropRepo(hotspots: Hotspot[], arg: string): Hotspot[] {
+  const name = hotspots.some((s) => s.repo === arg) ? arg : (parseSlug(arg) ?? arg);
+  return hotspots.filter((s) => s.repo !== name);
 }
 
 export function saveSession(session: Session): string {

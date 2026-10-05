@@ -29,6 +29,12 @@ Why is `sink` behind a Mutex, and what does the audio callback do if that lock i
 
 The code and location above are real scanner output. The question is an example of the kind a model asks; yours will differ.
 
+## Demo
+
+![grill interviewing a real repository: ingest, spots, a two-round interview, the weak-spot map](docs/demo.gif)
+
+Recorded against `gemma4` on a laptop, no network. The first answer is senior level and scores 4. The second is vague on purpose and scores 1, with what was missed. The full transcript is in [docs/DEMO.md](docs/DEMO.md), and `docs/demo.cast` plays back with `asciinema play`.
+
 ## How it works
 
 ![The three stages: ingest, interview, remember](docs/architecture.png)
@@ -46,7 +52,7 @@ The order of steps is fixed in code. The model only ever does one small job at a
 Needs Node 22.13+ and [Ollama](https://ollama.com).
 
 ```sh
-ollama pull gemma3:4b
+ollama pull gemma4
 
 git clone https://github.com/yashksaini-coder/grill && cd grill
 npm install && npm run build && npm link
@@ -56,6 +62,7 @@ grill start                # 5 questions
 grill start -n 3 --lang rust
 grill report               # the weak-spot map
 grill spots                # everything it found
+grill forget owner/repo    # drop a repository and its clone
 ```
 
 `grill ingest` also takes a git URL or a local path, so private code works without leaving the machine.
@@ -64,7 +71,7 @@ grill spots                # everything it found
 
 | Variable      | Default                     | Meaning                                                      |
 | ------------- | --------------------------- | ------------------------------------------------------------ |
-| `GRILL_MODEL` | `gemma3:4b`                 | Any model your local server has                              |
+| `GRILL_MODEL` | `gemma4`                    | Any model your local server has                              |
 | `GRILL_URL`   | `http://localhost:11434/v1` | Any OpenAI-compatible endpoint: Ollama, llama.cpp, LM Studio |
 | `GRILL_HOME`  | `~/.grill`                  | Where clones, spots and sessions are kept                    |
 

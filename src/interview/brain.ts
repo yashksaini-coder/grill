@@ -50,7 +50,9 @@ export function extractJson(text: string): unknown {
 
 export function parseGrade(text: string): Grade {
   const parsed = gradeSchema.parse(extractJson(text));
-  return { ...parsed, score: Math.round(parsed.score) };
+  const score = Math.round(parsed.score);
+  // 4 means nothing was missing, so there is no better answer to show.
+  return { ...parsed, score, better: score === 4 ? "" : parsed.better };
 }
 
 /** Models like to open with "Sure!" or wrap the question in quotes. */

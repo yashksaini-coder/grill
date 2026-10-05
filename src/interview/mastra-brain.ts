@@ -28,8 +28,13 @@ Scale:
 3 = correct and specific
 4 = what a senior engineer would say, including trade-offs
 
+Rules:
+- verdict names what was right or wrong about the answer, in one sentence. No praise, no adjectives about the candidate.
+- missed lists concrete points about this code the candidate did not say. Empty when nothing was missed.
+- better is the answer you wanted, 2-4 sentences about the code. Empty string when the score is 4.
+
 Reply with one JSON object and nothing else:
-{"score": 0-4, "verdict": "one sentence", "missed": ["specific point", "..."], "better": "the answer you wanted, 2-4 sentences"}`;
+{"score": 0-4, "verdict": "...", "missed": ["...", "..."], "better": "..."}`;
 
 /**
  * Lets the interviewer look outside the snippet. Needs a model with tool

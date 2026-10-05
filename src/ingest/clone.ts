@@ -24,7 +24,7 @@ export function resolveSource(arg: string, reposDir: string): Source {
   if (!slug) throw new Error(`Not a directory, owner/repo, or git URL: ${arg}`);
 
   mkdirSync(reposDir, { recursive: true });
-  const root = join(reposDir, slug.replace("/", "__"));
+  const root = cloneDir(slug, reposDir);
   const url = arg.includes("://") || arg.startsWith("git@") ? arg : `https://github.com/${slug}.git`;
 
   if (existsSync(join(root, ".git"))) {
@@ -33,6 +33,11 @@ export function resolveSource(arg: string, reposDir: string): Source {
     git(["clone", "--depth", "1", url, root]);
   }
   return { repo: slug, root };
+}
+
+/** Where a remote repository's shallow clone lives. */
+export function cloneDir(slug: string, reposDir: string): string {
+  return join(reposDir, slug.replace("/", "__"));
 }
 
 export function parseSlug(arg: string): string | undefined {

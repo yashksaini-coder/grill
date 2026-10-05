@@ -20,6 +20,6 @@ export interface ModelConfig {
  * The default is Gemma on Ollama's default port.
  */
 export const model: ModelConfig = {
-  modelId: process.env.GRILL_MODEL ?? "gemma3:4b",
+  modelId: process.env.GRILL_MODEL ?? "gemma4",
   url: process.env.GRILL_URL ?? "http://localhost:11434/v1",
 };

@@ -2,19 +2,21 @@
 import { parseArgs } from "node:util";
 import pc from "picocolors";
 import { model, paths } from "./config.js";
-import { resolveSource } from "./ingest/clone.js";
+import { rmSync } from "node:fs";
+import { cloneDir, resolveSource } from "./ingest/clone.js";
 import { scanRepo } from "./ingest/scan.js";
 import { MastraBrain } from "./interview/mastra-brain.js";
 import { pick } from "./interview/pick.js";
 import { runSession } from "./interview/session.js";
 import { renderReport } from "./report.js";
-import { loadHotspots, loadRounds, saveHotspots, saveSession, topicStats } from "./store.js";
+import { dropRepo, loadHotspots, loadRounds, saveHotspots, saveSession, topicStats } from "./store.js";
 import type { Hotspot, Lang } from "./types.js";
 import { terminal } from "./ui.js";
 
 const HELP = `grill: a local mock interviewer that has read your code
 
   grill ingest <owner/repo | git url | path> ...   read repositories and find what to ask about
+  grill forget <repo> ...                          drop a repository and its clone
   grill start [-n 5] [--lang rust|js] [--tools]    run an interview
   grill report                                     show the weak-spot map
   grill spots                                      list what was found
@@ -27,6 +29,8 @@ async function main(): Promise<void> {
   switch (command) {
     case "ingest":
       return ingest(rest);
+    case "forget":
+      return forget(rest);
     case "start":
       return start(rest);
     case "report":
@@ -50,6 +54,20 @@ function ingest(args: string[]): void {
   }
   saveHotspots([...kept.values()]);
   console.log(pc.dim(`\n${kept.size} spots saved. Run \`grill start\`.`));
+}
+
+function forget(args: string[]): void {
+  if (args.length === 0) throw new Error("Give at least one repository: grill forget owner/repo");
+  let kept = loadHotspots();
+  for (const arg of args) {
+    const rest = dropRepo(kept, arg);
+    const dropped = kept.filter((s) => !rest.includes(s));
+    const repo = dropped[0]?.repo;
+    if (repo) rmSync(cloneDir(repo, paths.repos), { recursive: true, force: true });
+    console.log(repo ? `${pc.bold(repo)}  ${dropped.length} spots dropped` : pc.dim(`${arg}: nothing to forget`));
+    kept = rest;
+  }
+  saveHotspots(kept);
 }
 
 async function start(args: string[]): Promise<void> {
@@ -118,6 +136,9 @@ function parseLang(value: string | undefined): Lang | undefined {
 /** A dead local server is the one failure everyone hits. Say what to do. */
 function explain(error: unknown): Error {
   const text = error instanceof Error ? `${error.message} ${String(error.cause ?? "")}` : String(error);
+  if (/model '.*' not found/i.test(text)) {
+    return new Error(`Model ${model.modelId} is not installed. Run \`ollama pull ${model.modelId}\`, or set GRILL_MODEL.`);
+  }
   if (/ECONNREFUSED|fetch failed|Cannot connect/i.test(text)) {
     return new Error(
       `Cannot reach a model at ${model.url}. Start Ollama and run \`ollama pull ${model.modelId}\`, or set GRILL_URL.`,

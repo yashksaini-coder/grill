@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { extractJson, parseGrade, tidy } from "../src/interview/brain.js";
 import { pick, priority } from "../src/interview/pick.js";
-import { topicStats } from "../src/store.js";
+import { dropRepo, topicStats } from "../src/store.js";
 import type { Hotspot, Round } from "../src/types.js";
 
 test("extractJson survives fences, prose, and braces inside strings", () => {
@@ -75,4 +75,19 @@ test("pick filters by language and never repeats within a session", () => {
   const js = pick(all, 5, { ...options, lang: "js" });
   assert.deepEqual(js.map((s) => s.id).sort(), ["3", "4"]);
   assert.equal(new Set(pick(all, 4, options).map((s) => s.id)).size, 4);
+});
+
+test("a perfect score has no better answer to show", () => {
+  const perfect = parseGrade('{"score": 4, "verdict": "Senior level.", "better": "The candidate was excellent."}');
+  assert.equal(perfect.better, "");
+  const partial = parseGrade('{"score": 3, "verdict": "Good.", "better": "Mention poisoning."}');
+  assert.equal(partial.better, "Mention poisoning.");
+});
+
+test("dropRepo removes one repository by slug, URL, or local name", () => {
+  const all = [spot("1", "unsafe"), { ...spot("2", "traits"), repo: "me/app" }, { ...spot("3", "unsafe"), repo: "local-dir" }];
+  assert.deepEqual(dropRepo(all, "me/app").map((s) => s.id), ["1", "3"]);
+  assert.deepEqual(dropRepo(all, "https://github.com/me/app.git").map((s) => s.id), ["1", "3"]);
+  assert.deepEqual(dropRepo(all, "local-dir").map((s) => s.id), ["1", "2"]);
+  assert.equal(dropRepo(all, "nobody/nothing").length, 3);
 });

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/banner.jpg" alt="grill: a mock interviewer that has read your code" width="800">
+</p>
+
 # grill
 
 A mock interviewer that has read your code. It runs on your laptop, on an open model, with no network.
@@ -5,6 +9,10 @@ A mock interviewer that has read your code. It runs on your laptop, on an open m
 Most interview prep asks textbook questions. Real senior interviews ask "walk me through your project", then press on the one line you hoped nobody would notice. `grill` clones your repositories, finds those lines, and asks about them.
 
 Built for [Akash](https://github.com/AkashJana18), who writes Rust and TypeScript and is interviewing for full-time roles.
+
+<p align="center">
+  <img src="docs/desk.jpg" alt="I built my friend an interviewer that read his code" width="800">
+</p>
 
 ```
 ── 1 of 5 ──
@@ -16,7 +24,7 @@ AkashJana18/miccli src/audio.rs:62  shared-state
    │         ...
 
 Why is `sink` behind a Mutex, and what does the audio callback do if that lock is contended?
-  > 
+  >
 ```
 
 The code and location above are real scanner output. The question is an example of the kind a model asks; yours will differ.
@@ -50,11 +58,11 @@ grill spots                # everything it found
 
 ## Configuration
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `GRILL_MODEL` | `gemma3:4b` | Any model your local server has |
-| `GRILL_URL` | `http://localhost:11434/v1` | Any OpenAI-compatible endpoint: Ollama, llama.cpp, LM Studio |
-| `GRILL_HOME` | `~/.grill` | Where clones, spots and sessions are kept |
+| Variable      | Default                     | Meaning                                                      |
+| ------------- | --------------------------- | ------------------------------------------------------------ |
+| `GRILL_MODEL` | `gemma3:4b`                 | Any model your local server has                              |
+| `GRILL_URL`   | `http://localhost:11434/v1` | Any OpenAI-compatible endpoint: Ollama, llama.cpp, LM Studio |
+| `GRILL_HOME`  | `~/.grill`                  | Where clones, spots and sessions are kept                    |
 
 `grill start --tools` lets the interviewer read beyond the snippet (callers, type definitions) through a `read_source` tool that is confined to the repository. It needs a model that supports tool calling.
 

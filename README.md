@@ -1,10 +1,8 @@
 <p align="center">
-  <img src="docs/banner.jpg" alt="grill: a mock interviewer that has read your code" width="800">
+  <img src="docs/cover.png" alt="grill: a mock interviewer that has read your code" width="800">
 </p>
 
 # grill
-
-![grill: a mock interviewer that has read your code](docs/cover.png)
 
 A mock interviewer that has read your code. It runs on your laptop, on an open model, with no network.
 

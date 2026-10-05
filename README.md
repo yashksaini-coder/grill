@@ -67,6 +67,8 @@ grill forget owner/repo    # drop a repository and its clone
 
 `grill ingest` also takes a git URL or a local path, so private code works without leaving the machine.
 
+Every command, flag, and failure message is in [guide.md](guide.md).
+
 ## Configuration
 
 | Variable      | Default                     | Meaning                                                      |

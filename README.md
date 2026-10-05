@@ -67,6 +67,8 @@ grill forget owner/repo    # drop a repository and its clone
 
 `grill ingest` also takes a git URL or a local path, so private code works without leaving the machine.
 
+There is a Makefile too: `make setup`, then `make ingest REPOS="owner/repo"` and `make start N=3 ONLY=rust`. `make help` lists the rest.
+
 Every command, flag, and failure message is in [guide.md](guide.md).
 
 ## Configuration

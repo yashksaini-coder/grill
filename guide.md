@@ -21,6 +21,12 @@ npm run build
 npm link            # puts `grill` on your PATH; or run `node dist/cli.js` instead
 ```
 
+Or let make do it:
+
+```sh
+make setup          # ollama pull gemma4, npm install, build, npm link
+```
+
 Check it works:
 
 ```sh
@@ -34,6 +40,25 @@ npm run dev -- spots      # run from source without building
 npm test                  # 20 tests, scanner and interview loop against a fake model
 npm run typecheck
 ```
+
+## Makefile
+
+Every command has a make target, so you never need `npm link`. `make help` lists them.
+
+```sh
+make setup                                   # model, install, build, link
+make check                                   # typecheck and test
+make ingest REPOS="AkashJana18/miccli ~/code/mine"
+make spots
+make start                                   # 5 questions
+make start N=3 ONLY=rust TOOLS=1             # flags as variables
+make start MODEL=qwen3:8b                    # another model for one run
+make report
+make forget REPOS="AkashJana18/miccli"
+make demo                                    # re-render docs/demo.gif from the cast
+```
+
+`GRILL_URL` and `GRILL_HOME` pass straight through from the environment. `dist/` is rebuilt only when a file in `src/` is newer.
 
 ## Model configuration
 

@@ -4,6 +4,8 @@
 
 # grill
 
+![grill: a mock interviewer that has read your code](docs/cover.png)
+
 A mock interviewer that has read your code. It runs on your laptop, on an open model, with no network.
 
 Most interview prep asks textbook questions. Real senior interviews ask "walk me through your project", then press on the one line you hoped nobody would notice. `grill` clones your repositories, finds those lines, and asks about them.
@@ -31,11 +33,15 @@ The code and location above are real scanner output. The question is an example 
 
 ## How it works
 
+![The three stages: ingest, interview, remember](docs/architecture.png)
+
 1. **Ingest.** Shallow-clones each repository and scans Rust, TypeScript and JavaScript for code worth a question: `unsafe`, locks, lifetimes, spawned tasks, `useEffect`, `forEach(async ...)`, `any`, empty `catch`, and more. Each hit is framed as the whole enclosing function.
 2. **Interview.** For each spot, a local model asks one question about that exact code, listens, presses once on the weakest part of the answer, then grades the exchange 0 to 4 and says what was missed.
 3. **Remember.** Scores are filed by topic. The next session draws more from the topics you scored worst on.
 
-The order of steps is fixed in code. The model only ever does one small job at a time, which is what makes a 4B model good enough.
+The order of steps is fixed in code. The model only ever does one small job at a time, so a small local model is enough.
+
+![One round: question, answer, follow-up, grade](docs/round.png)
 
 ## Run it
 
@@ -44,7 +50,7 @@ Needs Node 22.13+ and [Ollama](https://ollama.com).
 ```sh
 ollama pull gemma3:4b
 
-git clone https://github.com/yashksaini-coder/Interview-Prep && cd Interview-Prep
+git clone https://github.com/yashksaini-coder/grill && cd grill
 npm install && npm run build && npm link
 
 grill ingest AkashJana18/miccli AkashJana18/solana-consensus-lab

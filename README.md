@@ -4,6 +4,8 @@
 
 # grill
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/yashksaini-coder)
+
 A mock interviewer that has read your code. It runs on your laptop, on an open model, with no network.
 
 Most interview prep asks textbook questions. Real senior interviews ask "walk me through your project", then press on the one line you hoped nobody would notice. `grill` clones your repositories, finds those lines, and asks about them.
